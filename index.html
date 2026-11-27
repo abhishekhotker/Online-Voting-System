@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            color: #333;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        nav {
+            background: #1e40af;
+            padding: 13px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            background: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .welcome h2 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 25px 0;
+            color: #172554;
+        }
+
+        .candidates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .candidate {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .candidate.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #dbeafe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            margin: 0 auto 15px;
+        }
+
+        .candidate h3 {
+            margin-bottom: 8px;
+            color: #1e3a8a;
+        }
+
+        .candidate p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .vote-section {
+            background: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 12px;
+        }
+
+        #selectedCandidate {
+            color: #2563eb;
+            font-weight: bold;
+            margin: 15px;
+        }
+
+        .results {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .result-item {
+            margin: 20px 0;
+        }
+
+        .result-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 18px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2563eb;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        #totalVotes {
+            text-align: center;
+            color: #1e40af;
+            font-size: 22px;
+            margin: 20px 0;
+        }
+
+        .reset-btn {
+            background: #dc2626;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .reset-btn:hover {
+            background: #991b1b;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #15803d;
+        }
+
+        footer {
+            background: #172554;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media(max-width: 500px) {
+            nav a {
+                display: inline-block;
+                margin: 6px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🗳️ Online Voting System</h1>
+    <p>Cast Your Vote - Make Your Choice</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#candidates">Candidates</a>
+    <a href="#results">Results</a>
+</nav>
+
+<div class="container">
+
+    <section class="welcome" id="home">
+        <h2>Welcome to the Voting Portal</h2>
+        <p>
+            Select your favourite candidate and cast your vote.
+            Every vote counts!
+        </p>
+    </section>
+
+    <h2 class="section-title" id="candidates">
+        Choose Your Candidate
+    </h2>
+
+    <div class="candidates">
+
+        <div class="candidate" id="card1">
+            <div class="avatar">👨‍🎓</div>
+            <h3>Candidate A</h3>
+            <p>Symbol: 🌟 Star</p>
+            <button onclick="selectCandidate(1)">
+                Select Candidate
+            </button>
+        </div>
+
+        <div class="candidate" id="card2">
+            <div class="avatar">👩‍🎓</div>
+            <h3>Candidate B</h3>
+            <p>Symbol: 🌳 Tree</p>
+            <button onclick="selectCandidate(2)">
+                Select Candidate
+            </button>
+        </div>
+
+        <div class="candidate" id="card3">
+            <div class="avatar">🧑‍🎓</div>
+            <h3>Candidate C</h3>
+            <p>Symbol: 📚 Book</p>
+            <button onclick="selectCandidate(3)">
+                Select Candidate
+            </button>
+        </div>
+
+    </div>
+
+    <section class="vote-section">
+        <h2>Cast Your Vote</h2>
+
+        <p id="selectedCandidate">
+            Please select a candidate first.
+        </p>
+
+        <button id="voteButton" onclick="castVote()" disabled>
+            Submit Vote
+        </button>
+
+        <p id="message"></p>
+    </section>
+
+    <section class="results" id="results">
+
+        <h2 class="section-title">📊 Voting Results</h2>
+
+        <h3 id="totalVotes">Total Votes: 0</h3>
+
+        <div id="resultList"></div>
+
+        <button class="reset-btn" onclick="resetVoting()">
+            Reset Demo Results
+        </button>
+
+    </section>
+
+</div>
+
+<footer>
+    <p>© 2026 Online Voting System Demo</p>
+    <p>Educational Project using HTML, CSS and JavaScript</p>
+</footer>
+
+<script>
+
+    const candidates = [
+        { id: 1, name: "Candidate A", votes: 0 },
+        { id: 2, name: "Candidate B", votes: 0 },
+        { id: 3, name: "Candidate C", votes: 0 }
+    ];
+
+    let selected = null;
+
+    let hasVoted = localStorage.getItem("demoHasVoted") === "true";
+
+    function loadVotes() {
+
+        let savedVotes = localStorage.getItem("demoVotes");
+
+        if (savedVotes) {
+            try {
+                const parsed = JSON.parse(savedVotes);
+
+                if (
+                    Array.isArray(parsed) &&
+                    parsed.length === candidates.length &&
+                    parsed.every((item, index) =>
+                        item.id === candidates[index].id &&
+                        Number.isSafeInteger(item.votes) &&
+                        item.votes >= 0
+                    )
+                ) {
+                    candidates.forEach((candidate, index) => {
+                        candidate.votes = parsed[index].votes;
+                    });
+                }
+            } catch (error) {
+                console.log("Could not load saved votes.");
+            }
+        }
+    }
+
+    function saveVotes() {
+        localStorage.setItem(
+            "demoVotes",
+            JSON.stringify(candidates)
+        );
+    }
+
+    function selectCandidate(id) {
+
+        if (hasVoted) {
+            alert("You have already voted!");
+            return;
+        }
+
+        selected = id;
+
+        candidates.forEach(candidate => {
+            document.getElementById("card" + candidate.id)
+                .classList.remove("selected");
+        });
+
+        document.getElementById("card" + id)
+            .classList.add("selected");
+
+        const candidate = candidates.find(c => c.id === id);
+
+        document.getElementById("selectedCandidate").textContent =
+            "Selected: " + candidate.name;
+
+        document.getElementById("voteButton").disabled = false;
+
+        document.getElementById("message").textContent = "";
+    }
+
+    function castVote() {
+
+        if (hasVoted) {
+            alert("You have already voted!");
+            return;
+        }
+
+        if (selected === null) {
+            alert("Please select a candidate first!");
+            return;
+        }
+
+        const candidate = candidates.find(c => c.id === selected);
+
+        candidate.votes++;
+
+        hasVoted = true;
+
+        localStorage.setItem("demoHasVoted", "true");
+
+        saveVotes();
+
+        document.getElementById("message").textContent =
+            "Your demo vote has been submitted successfully!";
+
+        document.getElementById("voteButton").disabled = true;
+
+        candidates.forEach(candidate => {
+            document.getElementById("card" + candidate.id)
+                .classList.remove("selected");
+        });
+
+        document.getElementById("selectedCandidate").textContent =
+            "Your vote: " + candidate.name;
+
+        selected = null;
+
+        displayResults();
+    }
+
+    function displayResults() {
+
+        let total = candidates.reduce(
+            (sum, candidate) => sum + candidate.votes, 0
+        );
+
+        document.getElementById("totalVotes").textContent =
+            "Total Votes: " + total;
+
+        let resultHTML = "";
+
+        candidates.forEach(candidate => {
+
+            let percentage = total === 0
+                ? 0
+                : (candidate.votes / total) * 100;
+
+            resultHTML += `
+                <div class="result-item">
+
+                    <div class="result-info">
+                        <strong>${candidate.name}</strong>
+                        <span>
+                            ${candidate.votes} votes
+                            (${percentage.toFixed(1)}%)
+                        </span>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar"
+                             style="width: ${percentage}%">
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        });
+
+        document.getElementById("resultList").innerHTML = resultHTML;
+    }
+
+    function resetVoting() {
+
+        let confirmReset = confirm(
+            "Are you sure you want to reset all demo votes?"
+        );
+
+        if (confirmReset) {
+
+            candidates.forEach(candidate => {
+                candidate.votes = 0;
+            });
+
+            selected = null;
+            hasVoted = false;
+
+            localStorage.removeItem("demoVotes");
+            localStorage.removeItem("demoHasVoted");
+
+            document.getElementById("selectedCandidate").textContent =
+                "Please select a candidate first.";
+
+            document.getElementById("message").textContent = "";
+
+            document.getElementById("voteButton").disabled = true;
+
+            candidates.forEach(candidate => {
+                document.getElementById("card" + candidate.id)
+                    .classList.remove("selected");
+            });
+
+            displayResults();
+        }
+    }
+
+    loadVotes();
+    displayResults();
+
+    if (hasVoted) {
+        document.getElementById("selectedCandidate").textContent =
+            "You have already voted in this demo.";
+
+        document.getElementById("voteButton").disabled = true;
+    }
+
+</script>
+
+</body>
+</html>
